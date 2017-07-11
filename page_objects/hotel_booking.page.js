@@ -2,7 +2,14 @@ class Booking {
   constructor(element){
     this.element = element;
   }
-  get firstName() {return this.element.$('div:nth-child(1) p').getText(); }
+  firstname() {return this.element.$('div:nth-child(1) p').getText(); }
+  lastname() {return this.element.$('div:nth-child(2) p').getText(); }
+  price() {return this.element.$('div:nth-child(3) p').getText(); }
+  depositPaid() {return this.element.$('div:nth-child(4) p').getText(); }
+  checkinDate() {return this.element.$('div:nth-child(5) p').getText(); }
+  checkoutDate() {return this.element.$('div:nth-child(6) p').getText(); }
+
+  bookingId() {return this.element.getAttribute('id'); }
   delete() { this.element.$("input[type='button']").click(); }
 }
 
@@ -11,28 +18,17 @@ class BookingForm {
     this.form = form
   }
 
-  enterFirstName(firstName){
-    this.form.$('#firstname').setValue(firstName);
+  firstname() {
+    return this.form.$('#firstname').getValue();
   }
 
-  enterLastName(lastName){
-    this.form.$('#lastname').setValue(lastName);
-  }
-
-  enterPrice(price){
-    this.form.$('#totalprice').setValue(price);
-  }
-
-  selectDepositPaid(deposit){
-    this.form.$('#depositpaid').selectByVisibleText(deposit);
-  }
-
-  selectCheckinDate(checkinDate){
-    this.form.$('#checkin').setValue(checkinDate);
-  }
-
-  selectCheckoutDate(checkoutDate){
-    this.form.$('#checkout').setValue(checkoutDate);
+  enterData(bookingData){
+    this.form.$('#firstname').setValue(bookingData.firstname);
+    this.form.$('#lastname').setValue(bookingData.lastname);
+    this.form.$('#totalprice').setValue(bookingData.price);
+    this.form.$('#depositpaid').selectByVisibleText(bookingData.depositPaid);
+    this.form.$('#checkin').setValue(bookingData.checkinDate);
+    this.form.$('#checkout').setValue(bookingData.checkoutDate);
   }
 
   save() {
@@ -54,23 +50,34 @@ class HotelBookingPage {
   }
 
   saveBooking() {
-    const originalBookingsCount = this.bookings().length;
+    const firstname = this.bookingForm().firstname();
     this.bookingForm().save();
+    let savedBooking;
     browser.waitUntil(() => {
-       return this.bookings().length == originalBookingsCount + 1
-    }, 10000, 'expected bookings count to increase by 1 in 10s');
+      const booking = this.findBookingByFirstname(firstname);
+      if(booking != null) {
+        savedBooking = booking
+        return true;
+      }
+      return false;
+    }, 10000, 'expected bookings count to be saved in 10s');
+    return savedBooking;
   }
 
-  deleteBooking(firstName) {
+  deleteBooking(bookingId) {
     const originalBookingsCount = this.bookings().length;
-    this.findBookingByFirstName(firstName).delete()
+    this.findBookingByBookingId(bookingId).delete()
     browser.waitUntil(() => {
-       return this.bookings().length == originalBookingsCount - 1
-    }, 10000, 'expected bookings count to decrease by 1 in 10s');
+       return this.findBookingByBookingId(bookingId) == null;
+    }, 10000, 'expected bookings count to be deleted in 10s');
   }
 
-  findBookingByFirstName(firstName) {
-    return this.bookings().find((booking) => booking.firstName === firstName);
+  findBookingByFirstname(firstname) {
+    return this.bookings().find((booking) => booking.firstname() === firstname);
+  }
+
+  findBookingByBookingId(bookingId) {
+    return this.bookings().find((booking) => booking.bookingId() === bookingId);
   }
 
   /**

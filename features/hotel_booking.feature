@@ -5,7 +5,7 @@ Feature: Hotel Bookings
     Scenario: Create a new hotel booking
       Given I am on hotel booking page
       And I enter the following details in the form:
-      |FirstnamePrefix| Surname  | Price| Deposit| Checkin    | Checkout  |
+      |FirstnamePrefix| Lastname  | Price| Deposit| Checkin    | Checkout  |
       | New           | Customer | 10   | true   | 2017-07-16 | 2017-07-18|
       When I save the booking
       Then my booking record should be displayed on the page
@@ -13,7 +13,7 @@ Feature: Hotel Bookings
    Scenario: Delete an existing hotel booking
      Given I am on hotel booking page
      And I enter the following details in the form:
-     |FirstnamePrefix| Surname  | Price| Deposit| Checkin    | Checkout  |
+     |FirstnamePrefix| Lastname  | Price| Deposit| Checkin    | Checkout  |
      | New           | Customer | 10   | false  | 2017-08-19 | 2017-08-21|
      And I save the booking
      And my booking record should be displayed on the page
