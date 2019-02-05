@@ -2,6 +2,7 @@ const uuidv4 = require('uuid/v4');
 const expect = require('chai').expect;
 const HotelBookingPage = require('../../page_objects/hotel_booking.page');
 const hotelBookingPage = new HotelBookingPage();
+const { Given, When, Then } = require('cucumber');
 
 class BookingData {
   constructor(firstname, lastname, price, depositPaid, checkinDate, checkoutDate){
@@ -21,14 +22,13 @@ class BookingData {
   get checkoutDate() {return this._checkoutDate; }
 }
 
-module.exports = function () {
   let savedBooking, bookingData;
-  this.Given(/^I am on hotel booking page$/, function () {
+  Given(/^I am on hotel booking page$/, () => {
      hotelBookingPage.open();
      expect(hotelBookingPage.heading).to.eql('Hotel booking form');
   });
 
-  this.Given(/^I enter the following details in the form:$/, function (table) {
+  Given(/^I enter the following details in the form:$/, (table) => {
      for(var i in table.hashes()) {
        bookingData = new BookingData(
          table.hashes()[i]['FirstnamePrefix'] + uuidv4(),
@@ -42,11 +42,11 @@ module.exports = function () {
      }
   });
 
-  this.When(/^I save the booking$/, function () {
+  When(/^I save the booking$/, () => {
      savedBooking = hotelBookingPage.saveBooking();
   });
 
-  this.Then(/^my booking record should be displayed on the page$/, function () {
+  Then(/^my booking record should be displayed on the page$/, () => {
      expect(savedBooking.firstname()).to.eql(bookingData.firstname);
      expect(savedBooking.price()).to.eql(bookingData.price);
      expect(savedBooking.depositPaid()).to.eql(bookingData.depositPaid);
@@ -54,11 +54,10 @@ module.exports = function () {
      expect(savedBooking.checkoutDate()).to.eql(bookingData.checkoutDate);
   });
 
-  this.Then(/^I click the delete button for my booking$/, function () {
+  Then(/^I click the delete button for my booking$/, () => {
      hotelBookingPage.deleteBooking(savedBooking.bookingId());
   });
 
-  this.Then(/^the booking entry should no longer be displayed on the page$/, function () {
+  Then(/^the booking entry should no longer be displayed on the page$/, () => {
      expect(hotelBookingPage.findBookingByFirstname(bookingData.firstname)).to.not.exist;
   });
-};
