@@ -1,91 +1,63 @@
-class Booking {
-  constructor(element){
-    this.element = element;
-  }
-  firstname() {return this.element.$('div:nth-child(1) p').getText(); }
-  lastname() {return this.element.$('div:nth-child(2) p').getText(); }
-  price() {return this.element.$('div:nth-child(3) p').getText(); }
-  depositPaid() {return this.element.$('div:nth-child(4) p').getText(); }
-  checkinDate() {return this.element.$('div:nth-child(5) p').getText(); }
-  checkoutDate() {return this.element.$('div:nth-child(6) p').getText(); }
+module.exports = {
 
-  bookingId() {return this.element.getAttribute('id'); }
-  delete() { this.element.$("input[type='button']").click(); }
-}
+  getHeading: () => { return browser.getTitle(); },
 
-class BookingForm {
-  constructor(form){
-    this.form = form
-  }
+  fillBookingForm: (customerDetails) => {
+    browser.element('#firstname').setValue(customerDetails.firstname);
+    browser.element('#lastname').setValue(customerDetails.lastname);
+    browser.element('#totalprice').setValue(customerDetails.price);
+    browser.element('#depositpaid').selectByVisibleText(customerDetails.deposit);
+    browser.element('#checkin').setValue(customerDetails.checkin);
+    browser.element('#checkout').setValue(customerDetails.checkout);
+  },
 
-  firstname() {
-    return this.form.$('#firstname').getValue();
-  }
+  bookings: () => {
+    let allRows = browser.elements('#bookings div.row')
+    allRows.value.shift();
+    return allRows.value;
+  },
 
-  enterData(bookingData){
-    this.form.$('#firstname').setValue(bookingData.firstname);
-    this.form.$('#lastname').setValue(bookingData.lastname);
-    this.form.$('#totalprice').setValue(bookingData.price);
-    this.form.$('#depositpaid').selectByVisibleText(bookingData.depositPaid);
-    this.form.$('#checkin').setValue(bookingData.checkinDate);
-    this.form.$('#checkout').setValue(bookingData.checkoutDate);
-  }
-
-  save() {
-    this.form.$("input[type='button']").click();
-  }
-}
-
-class HotelBookingPage {
-
-  get heading() { return browser.getTitle(); }
-
-  bookingForm() { return new BookingForm(browser.$('#form')); }
-
-  bookings() {
-    const allRows = browser.$$('#bookings div.row');
-    // remove header row
-    allRows.shift();
-    return allRows.map((row) => new Booking(row))
-  }
-
-  saveBooking() {
-    const firstname = this.bookingForm().firstname();
-    this.bookingForm().save();
+  saveBooking: firstName => {
+    console.log("customerName:", firstName)
+    browser.element('input[value=" Save "]').click();
     let savedBooking;
+    let bookingObject;
     browser.waitUntil(() => {
-      const booking = this.findBookingByFirstname(firstname);
+      let booking = module.exports.findBookingByFirstname(firstName);
       if(booking != null) {
-        savedBooking = booking
+         savedBooking = booking
         return true;
       }
       return false;
     }, 10000, 'expected bookings count to be saved in 10s');
-    return savedBooking;
-  }
+    bookingObject = {bookingId: savedBooking.getAttribute('id'),
+                    firstName: savedBooking.element('div:nth-child(1) p').getText(),
+                    lastName: savedBooking.element('div:nth-child(2) p').getText(), 
+                    price: savedBooking.element('div:nth-child(3) p').getText(),
+                    depositPaid: savedBooking.element('div:nth-child(4) p').getText(),
+                    checkinDate: savedBooking.element('div:nth-child(5) p').getText(),
+                    checkoutDate: savedBooking.element('div:nth-child(6) p').getText()
+                  };
+                  console.log("saved booking:",bookingObject)
+    return bookingObject;
+  },
 
-  deleteBooking(bookingId) {
-    const originalBookingsCount = this.bookings().length;
-    this.findBookingByBookingId(bookingId).delete()
-    browser.waitUntil(() => {
-       return this.findBookingByBookingId(bookingId) == null;
-    }, 10000, 'expected bookings count to be deleted in 10s');
-  }
+  deleteBooking: bookingId => {
+    module.exports.findBookingByBookingId(bookingId).$('input[value="Delete"]').click();
+  },
 
-  findBookingByFirstname(firstname) {
-    return this.bookings().find((booking) => booking.firstname() === firstname);
-  }
+  findBookingByFirstname: firstname => {
+    return module.exports.bookings().find(booking => booking.element('div:nth-child(1) p').getText() === firstname);
+  },
 
-  findBookingByBookingId(bookingId) {
-    return this.bookings().find((booking) => booking.bookingId() === bookingId);
-  }
+  findBookingByBookingId: bookingId => {
+    return module.exports.bookings().find(booking => booking.getAttribute('id') === bookingId);
+  },
 
   /**
    * define or overwrite page methods
    */
-  open() {
+  open: () => {
     browser.url('/');
   }
 }
-
-module.exports = HotelBookingPage;
