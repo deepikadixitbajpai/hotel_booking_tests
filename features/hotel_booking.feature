@@ -1,7 +1,8 @@
 Feature: Hotel Bookings
   In order to book a room in hotel
   I need to fill the hotel booking form
-
+ 
+ @now
     Scenario: Create a new hotel booking
       Given I am on hotel booking page
       And I enter the following details in the form:

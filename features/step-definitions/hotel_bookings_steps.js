@@ -14,6 +14,10 @@ Given(/^I am on hotel booking page$/, () => {
 
 Given(/^I enter the following details in the form:$/, table => {
   customerDetails = table.hashes();
+  //   customerDetails.forEach(row => {
+  //     row.firstname += uuidv4();
+  //     hotelBookingPage.fillBookingForm(row);
+  //   });
   for (const i in customerDetails) {
     customerDetails[i].firstname = customerDetails[i].firstname + uuidv4();
     hotelBookingPage.fillBookingForm(customerDetails[i]);
