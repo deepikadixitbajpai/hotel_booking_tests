@@ -17,6 +17,7 @@ module.exports = {
   saveBooking: firstName => {
     browser.element('input[value=" Save "]').click();
     let savedBooking;
+
     browser.waitUntil(
       () => {
         const booking = module.exports.findBookingByFirstname(firstName);
@@ -30,7 +31,7 @@ module.exports = {
       'expected bookings count to be saved in 10s',
     );
 
-    const bookingDetails = {
+    return {
       bookingId: savedBooking.getAttribute('id'),
       firstName: savedBooking.element('div:nth-child(1) p').getText(),
       lastName: savedBooking.element('div:nth-child(2) p').getText(),
@@ -39,7 +40,6 @@ module.exports = {
       checkinDate: savedBooking.element('div:nth-child(5) p').getText(),
       checkoutDate: savedBooking.element('div:nth-child(6) p').getText(),
     };
-    return bookingDetails;
   },
 
   bookings: () => {
