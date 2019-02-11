@@ -6,7 +6,7 @@ Feature: Hotel Bookings
      Given I am on hotel booking page
        And I enter the following details in the form:
            |firstname| lastname | price| deposit| checkin    | checkout  |
-           | New     | Customer | 10   | true   | 2017-07-16 | 2017-07-18|
+           | New     | Customer | 10   | true   | 2019-07-16 | 2019-07-18|
       When I save the booking
       Then my booking record should be displayed on the page
 
