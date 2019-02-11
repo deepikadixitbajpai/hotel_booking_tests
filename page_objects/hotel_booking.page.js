@@ -44,6 +44,7 @@ module.exports = {
 
   bookings: () => {
     const allRows = browser.elements('#bookings div.row');
+    // delete the headings row
     allRows.value.shift();
     return allRows.value;
   },
@@ -67,7 +68,6 @@ module.exports = {
       .find(booking => booking.element('div:nth-child(1) p').getText() === firstname),
 
   findBookingByBookingId: bookingId => {
-    // try {
     const bookingDetails = module.exports
       .bookings()
       .find(booking => booking.getAttribute('id') === bookingId);
@@ -75,8 +75,5 @@ module.exports = {
       return false;
     }
     return bookingDetails;
-    // } catch (error) {
-    //   return console.log('error is:', error.message);
-    // }
   },
 };

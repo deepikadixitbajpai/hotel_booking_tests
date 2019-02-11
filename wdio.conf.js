@@ -106,7 +106,7 @@ exports.config = {
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
   services: ['selenium-standalone'], //
-  // Have to hardcode lower stable version selenium due to this issue: https://github.com/webdriverio/webdriverio/issues/2262
+  // Hardcode lower stable version selenium due to this issue: https://github.com/webdriverio/webdriverio/issues/2262
   seleniumInstallArgs: { version: '3.4.0' },
   seleniumArgs: { version: '3.4.0' },
   // Framework you want to run your specs with.
