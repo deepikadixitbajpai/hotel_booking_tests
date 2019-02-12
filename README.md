@@ -1,6 +1,6 @@
 #### Prerequisite:
 - Install Node v10.15.1. You can follow: https://docs.npmjs.com/getting-started/installing-node
-- Install Java8 (required by selenium standalone server setup)
+- Install Java11 (required by selenium standalone server setup)
 - Make sure you have chrome browser installed.
 
 #### Execute tests:
