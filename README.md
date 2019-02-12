@@ -12,4 +12,4 @@
 The tests can be configured to run on multiple browsers. For more details, follow the configuration setup: https://webdriver.io/docs/configurationfile.html
 
 
-To run a specific scenario with a tag: `npm run desktop -- --cucumberOpts.tagExpression='@tag_name'`
+To run a specific scenario with a tag: `npm run test -- --cucumberOpts.tagExpression='@tag_name'`
